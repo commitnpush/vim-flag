@@ -1,0 +1,21 @@
+# Prettier는 Tailwind 정렬만 담당
+# 일반 포맷팅은 Biome가 처리
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Config files (Biome가 처리)
+*.json
+*.js
+*.mjs
+*.cjs
+
+# Styles (Tailwind 정렬 필요)
+# *.css - CSS는 포함하지 않음 (필요시 제거)
