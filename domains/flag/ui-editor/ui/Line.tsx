@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 
-export const Line = ({ children, row }: PropsWithChildren<{ row: number }>) => {
+export const Line = ({ children }: PropsWithChildren) => {
   return <div className="flex">{children}</div>
 }

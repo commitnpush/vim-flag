@@ -1,17 +1,16 @@
 'use client'
 
 import { useMemo } from 'react'
+import { usePointerContext } from '@/domains/flag/ui-editor/hook/usePointerContext'
+import { useVimEventListener } from '@/domains/flag/ui-editor/hook/useVimEventListener'
+import type { SingleChar } from '@/domains/shared/types'
 import { Char } from './ui'
-import { SingleChar } from '@/domains/shared/types'
 import { Line } from './ui/Line'
-import { usePoint } from './hook/usePoint'
-import { useVimEventListener } from './hook/useVimEventListener'
 
-type EditorProps = {
-  content: string
-}
-export const Editor = ({ content }: EditorProps) => {
-  const { point } = usePoint()
+export const Editor = () => {
+  const { point, maxCol, content } = usePointerContext()
+  const pointerRow = point.row
+  const pointerCol = Math.min(point.col, maxCol)
   const contentArray = useMemo(() => {
     return content.split('\n').map((l) => l.split('') as SingleChar[])
   }, [content])
@@ -19,13 +18,12 @@ export const Editor = ({ content }: EditorProps) => {
   return (
     <div>
       {contentArray.map((line, row) => (
-        <Line key={row} row={row}>
+        <Line key={row}>
           {line.map((char, col) => (
             <Char
               key={col}
               content={char}
-              col={col}
-              active={point.row === row && point.col === col}
+              active={pointerRow === row && pointerCol === col}
             />
           ))}
         </Line>

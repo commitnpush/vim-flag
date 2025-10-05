@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react"
+import type { PropsWithChildren } from "react";
 
 const FlagLayout = ({ children }: PropsWithChildren) => {
   return (
@@ -6,7 +6,7 @@ const FlagLayout = ({ children }: PropsWithChildren) => {
       <header>Header</header>
       <main>{children}</main>
     </div>
-  )
-}
+  );
+};
 
-export default FlagLayout
+export default FlagLayout;
