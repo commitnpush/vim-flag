@@ -21,13 +21,19 @@
           "level": "error",
           "fix": "safe",
           "options": {
-            
+
           }
-        }
+        },
+        "useExhaustiveDependencies": "info"
       },
       "suspicious": {
         "noUnknownAtRules": "off",
-        "noArrayIndexKey": "off"
+        "noArrayIndexKey": "off",
+        "noVar": {
+          "level": "on",
+          "fix": "safe",
+          "options": {}
+        }
       }
     },
     "domains": {

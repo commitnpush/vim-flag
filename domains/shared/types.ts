@@ -1,5 +1,7 @@
 export type SingleChar = `${string}` extends `${infer F}${infer Rest}`
-  ? Rest extends ""
+  ? Rest extends ''
     ? F
     : never
-  : never;
+  : never
+
+export type Setter<T> = (value: T | ((prev: T) => T)) => void

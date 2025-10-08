@@ -1,35 +1,48 @@
 import { useCallback, useEffect } from 'react'
-import { usePointerContext } from '@/domains/flag/ui-editor/hook/usePointerContext'
+import {
+  handleArrowKey,
+  isArrowKey,
+} from '@/domains/flag/ui-editor/hook/arrowKey'
+import { handleGoKey, isGoKey } from '@/domains/flag/ui-editor/hook/goKey'
+import {
+  useCount,
+  useMaxCol,
+  useMaxRow,
+  usePoint,
+} from '@/domains/flag/ui-editor/store/edtorStore'
 
 export const useVimEventListener = () => {
-  const { maxCol, maxRow, setPoint } = usePointerContext()
+  const { setPoint } = usePoint()
+  const { count, setCount } = useCount()
+  const maxRow = useMaxRow()
+  const maxCol = useMaxCol()
   const vimEventListener = useCallback(
     (event: KeyboardEvent) => {
-      console.log(event.key)
-      switch (event.key) {
-        case 'h':
-          setPoint((prev) => ({
-            ...prev,
-            col: prev.col > maxCol ? maxCol - 1 : Math.max(0, prev.col - 1),
-          }))
-          break
-        case 'j':
-          setPoint((prev) => ({
-            ...prev,
-            row: Math.min(maxRow, prev.row + 1),
-          }))
-          break
-        case 'k':
-          setPoint((prev) => ({ ...prev, row: Math.max(0, prev.row - 1) }))
-          break
-        case 'l':
-          setPoint((prev) => ({
-            ...prev,
-            col: prev.col > maxCol ? prev.col : Math.min(maxCol, prev.col + 1),
-          }))
+      if (/^\d$/.test(event.key)) {
+        setCount(Number(event.key))
+        return
+      }
+
+      if (isArrowKey(event.key)) {
+        return handleArrowKey({
+          key: event.key,
+          count,
+          maxCol,
+          maxRow,
+          setPoint,
+        })
+      }
+
+      if (isGoKey(event.key)) {
+        return handleGoKey({
+          key: event.key,
+          count,
+          maxRow,
+          setPoint,
+        })
       }
     },
-    [setPoint, maxCol, maxRow],
+    [setPoint, count, maxCol, maxRow],
   )
 
   useEffect(() => {

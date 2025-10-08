@@ -1,0 +1,47 @@
+import { ARROW_KEYS } from '@/domains/flag/ui-editor/constants'
+import type { Setter } from '@/domains/shared/types'
+import type { ArrowKey, Point } from '../types'
+
+type HandleArrowKeysArgs = {
+  key: ArrowKey
+  maxCol: number
+  count: number | null
+  maxRow: number
+  setPoint: Setter<Point>
+}
+
+export const isArrowKey = (key: string): key is ArrowKey => {
+  return ARROW_KEYS.some((e) => e === key)
+}
+
+export const handleArrowKey = ({
+  key,
+  maxCol,
+  count: countProp,
+  maxRow,
+  setPoint,
+}: HandleArrowKeysArgs) => {
+  const count = countProp ?? 1
+  switch (key) {
+    case 'h':
+      setPoint((prev) => ({
+        ...prev,
+        col: prev.col > maxCol ? maxCol - 1 : Math.max(0, prev.col - count),
+      }))
+      break
+    case 'j':
+      setPoint((prev) => ({
+        ...prev,
+        row: Math.min(maxRow, prev.row + count),
+      }))
+      break
+    case 'k':
+      setPoint((prev) => ({ ...prev, row: Math.max(0, prev.row - count) }))
+      break
+    case 'l':
+      setPoint((prev) => ({
+        ...prev,
+        col: prev.col > maxCol ? prev.col : Math.min(maxCol, prev.col + count),
+      }))
+  }
+}
