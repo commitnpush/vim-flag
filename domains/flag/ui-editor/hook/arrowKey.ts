@@ -1,28 +1,14 @@
 import { ARROW_KEYS } from '@/domains/flag/ui-editor/constants'
-import type { Setter } from '@/domains/shared/types'
-import type { ArrowKey, Point } from '../types'
-
-type HandleArrowKeysArgs = {
-  key: ArrowKey
-  maxCol: number
-  maxRow: number
-  setPoint: Setter<Point>
-  buffer: string
-  flush: () => void
-}
-
+import type { KeyHandlerContext } from '@/domains/flag/ui-editor/hook/useKeyHandlerContext'
+import type { ArrowKey } from '../types'
 export const isArrowKey = (key: string): key is ArrowKey => {
   return ARROW_KEYS.some((e) => e === key)
 }
 
-export const handleArrowKey = ({
-  key,
-  maxCol,
-  maxRow,
-  setPoint,
-  buffer,
-  flush,
-}: HandleArrowKeysArgs) => {
+export const handleArrowKey = (
+  key: string,
+  { maxCol, maxRow, setPoint, buffer, flush }: KeyHandlerContext,
+) => {
   const count = Number(buffer) || 1
   switch (key) {
     case 'h':

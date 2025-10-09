@@ -8,48 +8,27 @@ import {
   handleNumberKey,
   isNumberKey,
 } from '@/domains/flag/ui-editor/hook/numberKey'
-import {
-  useBuffer,
-  useMaxCol,
-  useMaxRow,
-  usePoint,
-} from '@/domains/flag/ui-editor/store/edtorStore'
+import { useKeyHandlerContext } from '@/domains/flag/ui-editor/hook/useKeyHandlerContext'
 
 export const useVimEventListener = () => {
-  const { setPoint } = usePoint()
-  const maxRow = useMaxRow()
-  const maxCol = useMaxCol()
-  const { buffer, append, flush } = useBuffer()
+  const ctx = useKeyHandlerContext()
   const vimEventListener = useCallback(
     (event: KeyboardEvent) => {
+      const { key } = event
       if (isNumberKey(event.key)) {
-        handleNumberKey({ key: event.key, append })
+        handleNumberKey(key, ctx)
         return
       }
 
       if (isArrowKey(event.key)) {
-        return handleArrowKey({
-          key: event.key,
-          maxCol,
-          maxRow,
-          setPoint,
-          buffer,
-          flush,
-        })
+        return handleArrowKey(key, ctx)
       }
 
       if (isGoKey(event.key)) {
-        return handleGoKey({
-          key: event.key,
-          maxRow,
-          setPoint,
-          buffer,
-          append,
-          flush,
-        })
+        return handleGoKey(key, ctx)
       }
     },
-    [setPoint, maxCol, maxRow, buffer],
+    [ctx],
   )
 
   useEffect(() => {
