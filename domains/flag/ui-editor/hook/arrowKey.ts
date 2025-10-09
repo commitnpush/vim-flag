@@ -5,9 +5,10 @@ import type { ArrowKey, Point } from '../types'
 type HandleArrowKeysArgs = {
   key: ArrowKey
   maxCol: number
-  count: number | null
   maxRow: number
   setPoint: Setter<Point>
+  buffer: string
+  flush: () => void
 }
 
 export const isArrowKey = (key: string): key is ArrowKey => {
@@ -17,11 +18,12 @@ export const isArrowKey = (key: string): key is ArrowKey => {
 export const handleArrowKey = ({
   key,
   maxCol,
-  count: countProp,
   maxRow,
   setPoint,
+  buffer,
+  flush,
 }: HandleArrowKeysArgs) => {
-  const count = countProp ?? 1
+  const count = Number(buffer) || 1
   switch (key) {
     case 'h':
       setPoint((prev) => ({
@@ -44,4 +46,5 @@ export const handleArrowKey = ({
         col: prev.col > maxCol ? prev.col : Math.min(maxCol, prev.col + count),
       }))
   }
+  flush()
 }

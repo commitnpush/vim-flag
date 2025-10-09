@@ -5,7 +5,11 @@ import {
 } from '@/domains/flag/ui-editor/hook/arrowKey'
 import { handleGoKey, isGoKey } from '@/domains/flag/ui-editor/hook/goKey'
 import {
-  useCount,
+  handleNumberKey,
+  isNumberKey,
+} from '@/domains/flag/ui-editor/hook/numberKey'
+import {
+  useBuffer,
   useMaxCol,
   useMaxRow,
   usePoint,
@@ -13,36 +17,39 @@ import {
 
 export const useVimEventListener = () => {
   const { setPoint } = usePoint()
-  const { count, setCount } = useCount()
   const maxRow = useMaxRow()
   const maxCol = useMaxCol()
+  const { buffer, append, flush } = useBuffer()
   const vimEventListener = useCallback(
     (event: KeyboardEvent) => {
-      if (/^\d$/.test(event.key)) {
-        setCount(Number(event.key))
+      if (isNumberKey(event.key)) {
+        handleNumberKey({ key: event.key, append })
         return
       }
 
       if (isArrowKey(event.key)) {
         return handleArrowKey({
           key: event.key,
-          count,
           maxCol,
           maxRow,
           setPoint,
+          buffer,
+          flush,
         })
       }
 
       if (isGoKey(event.key)) {
         return handleGoKey({
           key: event.key,
-          count,
           maxRow,
           setPoint,
+          buffer,
+          append,
+          flush,
         })
       }
     },
-    [setPoint, count, maxCol, maxRow],
+    [setPoint, maxCol, maxRow, buffer],
   )
 
   useEffect(() => {

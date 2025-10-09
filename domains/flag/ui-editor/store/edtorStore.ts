@@ -7,25 +7,21 @@ import type { Setter } from '@/domains/shared/types'
 type State = {
   content: string
   contentArray: string[]
-  count: number | null
   point: Point
+  buffer: string
 }
 
 type Action = {
   setContent: Setter<string>
-  setCount: Setter<number | null>
   setPoint: Setter<Point>
+  append: (key: string) => void
+  flush: () => void
 }
 
 const useEditorStore = create<State & Action>((set, get) => {
   return {
     content: '',
     contentArray: [],
-    count: null,
-    point: {
-      row: 0,
-      col: 0,
-    },
     setContent: (content) => {
       const newContent =
         typeof content === 'function' ? content(get().content) : content
@@ -34,14 +30,20 @@ const useEditorStore = create<State & Action>((set, get) => {
         contentArray: newContent.split('\n'),
       })
     },
-    setCount: (count) => {
-      const newCount = typeof count === 'function' ? count(get().count) : count
-      console.log(newCount)
-      set({ count: newCount })
+    point: {
+      row: 0,
+      col: 0,
     },
     setPoint: (point) => {
       const newPoint = typeof point === 'function' ? point(get().point) : point
-      set({ point: newPoint, count: null })
+      set({ point: newPoint })
+    },
+    buffer: '',
+    append: (key: string) => {
+      set({ buffer: get().buffer + key })
+    },
+    flush: () => {
+      set({ buffer: '' })
     },
   }
 })
@@ -59,9 +61,6 @@ export const useContent = (initialContent?: string) => {
   }, [initialContent, setContent])
   return { content, setContent }
 }
-
-export const useCount = () =>
-  useEditorStore(useShallow(({ count, setCount }) => ({ count, setCount })))
 
 export const useMaxRow = () =>
   useEditorStore((state) => state.contentArray.length - 1)
@@ -83,3 +82,7 @@ export const usePoint = () => {
     setPoint,
   }
 }
+export const useBuffer = () =>
+  useEditorStore(
+    useShallow(({ buffer, append, flush }) => ({ buffer, append, flush })),
+  )
